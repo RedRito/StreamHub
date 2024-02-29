@@ -1,0 +1,26 @@
+{
+  "name": "streamhub",
+  "version": "1.0.0",
+  "description": "Sick of scrolling through different tabs to check on your favorite content creators? This hub will solve your problems",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RedRito/StreamHub.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RedRito/StreamHub/issues"
+  },
+  "homepage": "https://github.com/RedRito/StreamHub#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  }
+}
