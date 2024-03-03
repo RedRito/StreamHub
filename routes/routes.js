@@ -1,7 +1,9 @@
 'use strict';
-module.export = function(app){
+
+module.exports = function(app){
 
     app.route('/home')
-    .get()
-
-}
+    .get((req, res) => {
+        res.json({ message: "Hello from server!" });
+    })
+};

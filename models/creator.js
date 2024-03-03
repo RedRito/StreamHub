@@ -1,5 +1,5 @@
 'use strict'
-/*
+
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
@@ -16,7 +16,8 @@ var Creator = new Schema({
     icon:{
         type: string //string because it is just a link to an image
     },
-
+    
+    //max 30 streams that can be seen
     streams:[{
         streamId : String,
         unixTime : String,  // Turn string -> number -> time zone || also used for when stream starts
@@ -29,12 +30,4 @@ var Creator = new Schema({
     }]
 
 
-
-
 });
-
-
-
-
-
-*/
