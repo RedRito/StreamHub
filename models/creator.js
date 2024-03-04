@@ -18,7 +18,7 @@ var Creator = new Schema({
     },
     
     //max 30 streams that can be seen
-    streams:[{
+    streams:[{ 
         streamId : String,
         unixTime : String,  // Turn string -> number -> time zone || also used for when stream starts
         title : String,
@@ -31,3 +31,6 @@ var Creator = new Schema({
 
 
 });
+
+//type: Schema.Types.ObjectId, ref: 'Stream'
+

@@ -8,7 +8,7 @@ const port = 3000;
 
 var mongoose = require('mongoose');
 var mongoURI = process.env.MONGO_URI;
-console.log(mongoURI);
+mongoose.set('useNewUrlParser', true);
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoURI)
 
