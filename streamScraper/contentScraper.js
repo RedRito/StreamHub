@@ -19,6 +19,7 @@ Promise.all(creatorList.map((creator) => axios.get(creator)))
 ) => {    
     creatorData.push(creator1);
     parseData(creator1);
+    //loopThroughJSON(creator1);
     // creatorData.push(creator2);
     // console.log(creatorData.length);
     // console.log("pushed creator data\n");
@@ -27,6 +28,43 @@ Promise.all(creatorList.map((creator) => axios.get(creator)))
 });
 
 function parseData(creator){
-    console.log(creator);
+    //first stringify the data
+    var stringified = JSON.stringify(creator);
+
+    var start = stringified.indexOf("var ytInitialData = {");
     
+    // console.log(start);
+    var sliced = stringified.slice(start);
+    //next slice till end of data
+    start = sliced.indexOf("{");
+    var end = sliced.indexOf(";</script>");
+    console.log(start);
+    console.log(end);
+    var data = sliced.slice(start, end);
+    //need to turn it into a string
+    var finished = "\"";
+    finished = finished.concat(data).concat("\"");
+    // console.log(finished);
+    // console.log("END\n");
+    var jsonified = JSON.parse(finished);
+    var jsonified2 = JSON.parse(jsonified);
+    console.log(jsonified2.contents);
 }
+function loopThroughJSON(obj) {
+    for (let key in obj) {
+      if (typeof obj[key] === 'object') {
+        if (Array.isArray(obj[key])) {
+          // loop through array
+          for (let i = 0; i < obj[key].length; i++) {
+            loopThroughJSON(obj[key][i]);
+          }
+        } else {
+          // call function recursively for object
+          loopThroughJSON(obj[key]);
+        }
+      } else {
+        // do something with value
+        console.log(key + ': ' + obj[key]);
+      }
+    }
+  }
