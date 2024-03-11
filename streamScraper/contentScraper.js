@@ -1,8 +1,8 @@
 // This is an API scraper that aims to make fetch requests to youtube
 const axios = require('axios');
 var creatorList = require('./creatorList');
-// var mongoose = require('mongoose');  //used for database access
-// Creator = mongoose.model('Creator'); //creator model
+var mongoose = require('mongoose');  //used for database access
+Creator = mongoose.model('Creator'); //creator model
 
 
 // states
@@ -11,6 +11,33 @@ var creatorList = require('./creatorList');
 //  s2(oldStream) -streamData> s4
 //  s3 -> s4
 //  s4(updateDatabase) -> output
+
+function scrapeContent()
+{
+    Promise.all(creatorList.map((creator) => axios.get(creator)))
+    .then((
+        response
+    ) => {    
+        let creators = [];
+        let creatorJsonData = [];
+        response.map((response) => {creators.push(response.data)});
+
+        //get JSON for all creators
+        creators.map((creator) => {creatorJsonData.push(parseData(creator))});
+        //console.log(creatorJsonData);
+        let temp = getCreatorData(creatorJsonData[0]);
+        console.log(temp);
+        //updateDatabase(temp);
+        // TODO: Parse through JSON and collect relevant data
+        // TODO: Update database
+        // creatorJsonData.map((creator) => {updateDatabase(getCreatorData(creator))});
+        
+
+    }).catch(function(error){
+        console.log(error);
+    });
+}
+
 
 Promise.all(creatorList.map((creator) => axios.get(creator)))
 .then((
@@ -78,7 +105,6 @@ function getCreatorData(creator)
             amount: "",
             lastUpdated: ""
         }
-        console.log(streamObj.streamId);
         let content = streamContent[i].richItemRenderer.content.videoRenderer;
         if(content.publishedTimeText) continue;    //If stream is past, send to update
         else if(!content.upcomingEventData) continue;   //ongoing stream
@@ -115,7 +141,7 @@ function updateOldStream(streamContent, streamObj) //little complicated needs to
 
 function updateOngoingStream(streamContent, streamObj)
 {
-    
+
     return streamObj;
 }
 
