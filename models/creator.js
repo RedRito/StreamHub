@@ -6,15 +6,20 @@ var Schema = mongoose.Schema;
 
 var Creator = new Schema({
 
-    _id: Schema.ObjectId,
+    // _id: Schema.ObjectId, //will not declare it explicitly, hassle
 
+    //Found through data, used for database
     name:{
         type: String,
-        required: true
+    },
+    
+    //done by manually, stream name.
+    canonicalName:{
+        type: String
     },
 
     icon:{
-        type: string //string because it is just a link to an image
+        type: String //string because it is just a link to an image also done by hand
     },
     
     //max 30 streams that can be seen
@@ -32,5 +37,6 @@ var Creator = new Schema({
 
 });
 
+module.exports = mongoose.model('Creator', Creator);
 //type: Schema.Types.ObjectId, ref: 'Stream'
 
