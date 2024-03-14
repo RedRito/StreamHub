@@ -23,14 +23,11 @@ mongoose.connect(mongoURI)
 const routes = require('./routes/routes');
 routes(app);
 
-var test = require("./streamScraper/contentScraper");
+var test = require("./streamScraper/automatedScrape");
 
-cron.schedule("*/50 * * * * *", function () {
-  test.scrapeContent();
-  console.log("---------------------");
-  console.log("running a task every 50 seconds");
-});
+test.automateScrape();
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+

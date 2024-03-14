@@ -69,7 +69,7 @@ module.exports = [
     'https://www.youtube.com/@TakanashiKiara/streams',
     'https://www.youtube.com/@NinomaeInanis/streams',
     'https://www.youtube.com/@GawrGura/streams',
-    'https://www.youtube.com/@WatsonAmelia/streams',
+    'https://www.youtube.com/@WatsonAmelia/streams'
 
     // 2nd GEN EN
 

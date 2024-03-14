@@ -1,6 +1,6 @@
 // This is an API scraper that aims to make fetch requests to youtube
 const axios = require('axios');
-var creatorList = require('./creatorList');
+//var creatorList = require('./creatorList');
 var mongoose = require('mongoose');  //used for database access
 Creator = mongoose.model('Creator'); //creator model
 
@@ -11,9 +11,8 @@ Creator = mongoose.model('Creator'); //creator model
 //  s2(oldStream) -streamData> s4
 //  s3 -> s4
 //  s4(updateDatabase) -> output
-
-function scrapeContent()
-{
+exports.scrapeContent = function(creatorList){
+    console.log(creatorList);
     Promise.all(creatorList.map((creator) => axios.get(creator)))
     .then((
         response
@@ -25,12 +24,17 @@ function scrapeContent()
         //get JSON for all creators
         creators.map((creator) => {creatorJsonData.push(parseData(creator))});
         //console.log(creatorJsonData);
-        let temp = getCreatorData(creatorJsonData[0]);
-        console.log(temp);
+
+
+        creatorJsonData.map((creator) => { console.log(getCreatorData(creator))});
+
+
+        // let temp = getCreatorData(creatorJsonData[0]);
+        // console.log(temp);
         //updateDatabase(temp);
         // TODO: Parse through JSON and collect relevant data
         // TODO: Update database
-        // creatorJsonData.map((creator) => {updateDatabase(getCreatorData(creator))});
+        creatorJsonData.map((creator) => {updateDatabase(getCreatorData(creator))});
         
 
     }).catch(function(error){
@@ -38,29 +42,29 @@ function scrapeContent()
     });
 }
 
+// Promise.all(creatorList.map((creator) => axios.get(creator)))
+// .then((
+//     response
+// ) => {    
+//     let creators = [];
+//     let creatorJsonData = [];
+//     response.map((response) => {creators.push(response.data)});
 
-Promise.all(creatorList.map((creator) => axios.get(creator)))
-.then((
-    response
-) => {    
-    let creators = [];
-    let creatorJsonData = [];
-    response.map((response) => {creators.push(response.data)});
-
-    //get JSON for all creators
-    creators.map((creator) => {creatorJsonData.push(parseData(creator))});
-    //console.log(creatorJsonData);
-    let temp = getCreatorData(creatorJsonData[0]);
-    console.log(temp);
-    //updateDatabase(temp);
-    // TODO: Parse through JSON and collect relevant data
-    // TODO: Update database
-    // creatorJsonData.map((creator) => {updateDatabase(getCreatorData(creator))});
+//     //get JSON for all creators
+//     creators.map((creator) => {creatorJsonData.push(parseData(creator))});
+//     //console.log(creatorJsonData);
+//     creatorJsonData.map((creatorJSON) => {console.log(getCreatorData(creatorJSON))});
+//     // let temp = getCreatorData(creatorJsonData[0]);
+//     // console.log(temp);
+//     //updateDatabase(temp);
+//     // TODO: Parse through JSON and collect relevant data
+//     // TODO: Update database
+//     // creatorJsonData.map((creator) => {updateDatabase(getCreatorData(creator))});
     
 
-}).catch(function(error){
-    console.log(error);
-});
+// }).catch(function(error){
+//     console.log(error);
+// });
 
 //Parses and returns a JSON of ytInitialData
 function parseData(creator){
@@ -85,16 +89,23 @@ function parseData(creator){
 
 function getCreatorData(creator)
 {
-    let creatorObj = { name: "", streams: [] };
+    let creatorObj = { name: "", canonicalName: "", icon: "", streams: [] };
+
+    let headers = creator.header.c4TabbedHeaderRenderer
+    creatorObj.canonicalName = headers.title;
+    creatorObj.icon = headers.avatar.thumbnails[2].url;
+
     let main = creator.contents.twoColumnBrowseResultsRenderer.tabs
     
     creatorObj.name = main[0].tabRenderer.endpoint.browseEndpoint.canonicalBaseUrl
+
     console.log(creatorObj.name);
 
     // 30 streams from JSON last item in contents is for rendering
     let streamContent = main[3].tabRenderer.content.richGridRenderer.contents
     for(let i = 0; i < 30; i++)
     {
+        if(!streamContent[i].richItemRenderer) break;   //end of stream content
         let streamObj = {
             streamId: "",
             unixTime: "",
@@ -122,13 +133,11 @@ function createNewStream(streamContent, streamObj)
 {
     streamObj.streamId = streamContent.videoId;
     streamObj.thumbnail = streamContent.thumbnail.thumbnails[1].url; //subject to change, just size of thumbnail
-    streamObj.title = streamContent.title.runs[0].text
-    streamObj.unixTime = streamContent.upcomingEventData.startTime
-    //streamObj.unixTime = (streamContent.upcomingEventData.startTime) ? streamContent.upcomingEventData.startTime : streamObj.unixTime;
-    streamObj.amount = streamContent.shortViewCountText.runs[0].text.toString();
-    (streamContent.shortViewCountText.runs[1].text.includes("waiting")) ? streamObj.waiting = true : streamObj.watching = true;
+    streamObj.title = streamContent.title.runs[0].text;
+    streamObj.unixTime = streamContent.upcomingEventData.startTime; //if there is upcoming event data then stream must be waiting
+    streamObj.waiting = true;
+    (streamContent.shortViewCountText) ? streamObj.amount = streamContent.shortViewCountText.runs[0].text.toString() : streamObj.amount = '0';
     streamObj.lastUpdated = getCurrentTime();
-
     return streamObj;
 }
 
@@ -145,10 +154,17 @@ function updateOngoingStream(streamContent, streamObj)
     return streamObj;
 }
 
+function populateDatabase(creatorList)
+{
+    
+}
 
 function updateDatabase(creator)
 {
-    
+    creator = Creator();
+    creator.save();
+    // var NewCreator = new Creator(creator);
+    // NewCreator.save();
 }
 
 // var headers = {
