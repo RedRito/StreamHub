@@ -27,7 +27,6 @@ exports.automateScrape = function(time){
         scraper.scrapeContent(creators);
         i = i % 20;
         // i = i % creatorList.length;
-        // i++;
         //console.log(creators);
       });
 }
