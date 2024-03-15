@@ -4,6 +4,7 @@ const path = require('path');
 const cors = require('cors');
 const app = express();
 const bodyParser = require('body-parser');
+const cron = require("node-cron");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -22,10 +23,11 @@ mongoose.connect(mongoURI)
 const routes = require('./routes/routes');
 routes(app);
 
-app.get('/api', (req, res) => {
-    res.json({ message: "Hello from server!" });
-});
+var test = require("./streamScraper/automatedScrape");
+
+test.automateScrape();
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
+
