@@ -9,8 +9,13 @@ var i = 0;
 
 exports.automateScrape = function(time){
     console.log("Starting Youtube Scraper");
-    cron.schedule("*/30 * * * * *", function () {
+    cron.schedule("*/10 * * * * *", function () {
         let creators = [];
+        // creators.push('https://www.youtube.com/@NatsuiroMatsuri/streams');
+        // creators.push('https://www.youtube.com/@Robocosan/streams');
+        // creators.push('https://www.youtube.com/@SakuraMiko/streams');
+        // creators.push('https://www.youtube.com/@HoshimachiSuisei/streams');
+        // creators.push('https://www.youtube.com/@AZKi/streams');
         if(i == 0){
             creators.push(creatorList[i]);
             //console.log(creatorList[i]);
