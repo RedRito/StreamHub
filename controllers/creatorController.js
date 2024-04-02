@@ -1,6 +1,7 @@
 'use strict';
 var mongoose = require('mongoose');
 Creator = mongoose.model('Creator');
+Stream = mongoose.model('Stream');
 
 exports.addCreator = function(req, res)
 {
@@ -11,4 +12,14 @@ exports.addCreator = function(req, res)
     //NewCreator.save();
 };
 
+exports.getCreators =  async function(req, res){
+    try{
+        const data = await Creator.find().sort({ 'streams.unixTime': 1 }).pretty();
+        console.log(data);
+        res.json(data);
+    }
+    catch(err){
+        res.send(err);
+    }
+}
 

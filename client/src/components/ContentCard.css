@@ -1,0 +1,139 @@
+.card{
+    background-color: white;
+    border-radius: 8px;
+    width: 270px;
+    height: 250px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 0px;
+    box-shadow: -3px 8px 15px grey;
+}
+/* Box shadow for shadowing, first and second parameter is x and y,  third is blue and fourth is color */
+
+.size-of-card{
+    width: 270px;
+    height: 250px;
+}
+
+/* In top card border radius used to keep card bordered  */
+.top-card{
+    border-radius: 8px 8px 0 0; 
+    box-shadow: 0px 2px 8px grey;
+    /* background-color: aqua; */
+    width: auto;
+    height: 30px;
+    margin: 0;
+}
+
+.middle-card{
+    margin: 0;
+    border-radius: 0 0 0 0;
+    width: auto;
+    height: 160px;
+    /* background-color: red; */
+}
+
+.bottom-card{
+    /* background-color: blue; */
+    margin: 0;
+    border-radius: 0 0 8px 8px;
+    height: 56px;
+    width: auto;
+}
+
+.card-text{
+    color: rgb(0, 0, 0);
+    z-index: 1;
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.card-text-name{
+    margin-right: 10px;
+    float: right;
+    display: inline;
+}
+
+.card-text-time{
+    margin-left: 10px;
+    margin-top: 3px;
+    display: inline-block;
+}
+
+.card-image{
+    /* background-color: blueviolet; */
+    margin-top: 0;
+    margin-left: 10px;
+    width: 250px;
+    height: 160px;
+    max-width: 250px;
+    max-height: 250px;
+}
+/* Clip path used to crop out black lines */
+.card-image-crop{
+    margin-top: -12px;
+    max-width: 250px;
+    max-height: 250px;
+    clip-path: inset(24px 0px 24px 0px);
+}
+
+.card-icon-border{
+    width: 61px;
+    height: 61px;
+    margin-left: calc(50% - 30px);
+    background-color: black;
+    clip-path: inset(0px 0px 1px 0px round 80%);
+}
+
+.card-icon{
+    /* background-color: aquamarine; */
+    width: 60px;
+    height: 60px;
+    margin-left: calc(50% - 30px);
+    clip-path: inset(0px 0px 0px 0px round 80%);
+}
+
+
+.scroll {
+    position: relative;
+    width: 50vw;
+    height: 10%;
+    min-height: 10px;
+    background-color: #3a0b0b;
+    overflow: hidden;
+    z-index: 1;
+    margin-top: 25%;
+    margin-left: 25%;
+    margin-right: 25%;
+    padding: 0;
+  }
+  
+.m-scroll {
+    overflow: hidden;
+    height: 100%;
+    white-space: nowrap;
+    animation: scrollText 10s infinite linear;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-left: 0;
+    font-size: 0;
+    display: inline-block;
+}
+
+span {
+    font-size: 30px;
+    display: inline-block;
+    min-width: 100vw;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+  
+@keyframes scrollText {
+    from {
+    transform: translateX(0%);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
