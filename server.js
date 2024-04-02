@@ -9,13 +9,14 @@ const cron = require("node-cron");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cors());
-const port = 3000;
+const port = 3001;
 
 var mongoose = require('mongoose');
 var mongoURI = process.env.MONGO_URI;
 
 //first load schemas
 Creator = require('./models/creator');
+Stream = require('./models/Stream');
 
 mongoose.Promise = global.Promise;
 mongoose.connect(mongoURI)
@@ -30,4 +31,3 @@ test.automateScrape();
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
-
