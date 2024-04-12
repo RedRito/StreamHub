@@ -92,7 +92,7 @@ ul{
     height: 20px;
     z-index: 100;
     background-color: red;
-    position: relative;
+    position: fixed;
     display: block;
     cursor: pointer;
     transition: left .3s ease-in-out;
