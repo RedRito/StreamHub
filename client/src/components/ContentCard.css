@@ -3,20 +3,25 @@
     border-radius: 8px;
     width: 270px;
     height: 250px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 20px;
+    margin-right: 0px;
+    margin-bottom: 0px;
     margin-top: 0px;
     box-shadow: -3px 8px 15px grey;
+    padding: 0;
+    display: inline-block;
 }
 /* Box shadow for shadowing, first and second parameter is x and y,  third is blue and fourth is color */
 
 .size-of-card{
+    padding: 0;
     width: 270px;
     height: 250px;
 }
 
 /* In top card border radius used to keep card bordered  */
 .top-card{
+    padding: 0;
     border-radius: 8px 8px 0 0; 
     box-shadow: 0px 2px 8px grey;
     /* background-color: aqua; */
@@ -26,69 +31,75 @@
 }
 
 .middle-card{
+    padding: 0;
     margin: 0;
     border-radius: 0 0 0 0;
     width: auto;
-    height: 160px;
+    height: 155px;
     /* background-color: red; */
 }
 
 .bottom-card{
     /* background-color: blue; */
+    padding: 0;
     margin: 0;
     border-radius: 0 0 8px 8px;
-    height: 56px;
+    height: 65px;
     width: auto;
+    overflow: hidden;
 }
 
 .card-text{
+    padding: 0;
     color: rgb(0, 0, 0);
-    z-index: 1;
     font-size: 18px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 .card-text-name{
     margin-right: 10px;
+    padding: 0;
     float: right;
     display: inline;
 }
 
 .card-text-time{
+    padding: 0;
     margin-left: 10px;
     margin-top: 3px;
     display: inline-block;
 }
 
 .card-image{
-    /* background-color: blueviolet; */
+    background-color: blueviolet;
+    padding: 0;
     margin-top: 0;
     margin-left: 10px;
     width: 250px;
-    height: 160px;
-    max-width: 250px;
-    max-height: 250px;
+    height: 150px;
 }
 /* Clip path used to crop out black lines */
 .card-image-crop{
     margin-top: -12px;
     max-width: 250px;
-    max-height: 250px;
+    max-height: 150px;
     clip-path: inset(24px 0px 24px 0px);
 }
 
 .card-icon-border{
-    width: 61px;
-    height: 61px;
+    width: 62px;
+    height: 62px;
     margin-left: calc(50% - 30px);
     background-color: black;
-    clip-path: inset(0px 0px 1px 0px round 80%);
+    clip-path: inset(0px 0px 0px 0px round 80%);
 }
 
 .card-icon{
     /* background-color: aquamarine; */
     width: 60px;
     height: 60px;
+    padding: 0;
+    margin-top: 1px;
     margin-left: calc(50% - 30px);
     clip-path: inset(0px 0px 0px 0px round 80%);
 }
@@ -137,3 +148,50 @@ span {
         transform: translateX(-50%);
     }
 }
+
+/* @media screen and (max-width: 1550px)  {
+    .card{
+        background-color: white;
+        border-radius: 8px;
+        width: 80%;
+        height: 85%;
+        margin-left: 2%;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        box-shadow: -3px 8px 15px grey;
+        padding: 0;
+        display: inline-block;
+    }
+    .card-image{
+        background-color: blueviolet;
+        padding: 0;
+        margin-top: 0;
+        margin-left: 1%;
+        width: 90%;
+        height: 150px;
+    }
+    .card-image-crop{
+        margin-top: -12px;
+        max-width: 250px;
+        max-height: 250px;
+        clip-path: inset(24px 0px 24px 0px);
+    }
+    
+}
+
+@media screen and (max-width: 1280px)  {
+    .card{
+        background-color: white;
+        border-radius: 8px;
+        width: 270px;
+        height: 250px;
+        margin-left: 20px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-top: 0px;
+        box-shadow: -3px 8px 15px grey;
+        padding: 0;
+        display: inline-block;
+    }
+} */

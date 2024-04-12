@@ -12,14 +12,34 @@ exports.addCreator = function(req, res)
     //NewCreator.save();
 };
 
-exports.getCreators =  async function(req, res){
+exports.getStreams =  async function(req, res){
     try{
-        const data = await Creator.find().sort({ 'streams.unixTime': 1 }).pretty();
-        console.log(data);
+        let query = {$or: [{watching: true}, {waiting: true}]};
+        const requestData = req.body;
+        //if there is a req query
+        // console.log(req.body);
+        if(requestData.queryType && requestData.queryValue){
+            const queryType = requestData.queryType; 
+            query[queryType] = requestData.queryValue; 
+        }
+        const data = await Stream.find(query).sort({ unixTime: 1 });
         res.json(data);
     }
     catch(err){
         res.send(err);
     }
+}
+
+exports.getVods = async function(req, res){
+    try
+    {
+        const data = await Stream.find({watching: false, waiting: false}).sort({ unixTime: 1 });
+        res.json(data);
+    }
+    catch(err)
+    {
+        res.send(err);
+    }
+
 }
 

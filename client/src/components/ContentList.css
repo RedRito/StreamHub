@@ -1,41 +1,62 @@
-.body{
-    position: absolute;
-    overflow-x: hidden;
-    margin: -8px;
-    width: 100%;
-    height: 100%;
-    background-color:#FFFFFF;
-
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-}
-
-.body::-webkit-scrollbar{
-    display: none;
-}
 
 .test{
-    width: auto;
-    height: auto;
-    margin-top: 30px;
+    width: 300px;
+    height: 270px;
+    margin-top: 0px;
     margin-left: 0px;
-    background-color: red;
-    display: inline-block;
+    margin-right: 0px;
+    /* background-color: red; */
+    overflow: hidden;
+    display: inline-flex;
 }
+
 
 .list-size{
-    margin-left: 0px;
-    margin-right: 0;
-    margin-top: 0;
-    width: 1500px;
-    max-width: 100%;
+    padding: 0;
+    background-color: red;
+    margin: 0;
+    top: 300px;
+    left: calc(50% - 600px);
+    right: 25%;
+    width: auto;
+    max-width: 1200px;
     height: auto;
-    overflow-x: hidden;
+    overflow: hidden;
+    display: inline-block;
+    position: relative;
 }
 
-.text{
-    color: aliceblue;
-    padding-top: 25%;
-    text-align: center;
-    font-size: larger;
+/* When screen size is at a certain pixel size we need to dynamically reduce size of list as well as size of cards */
+/* @media screen and (max-width: 1550px)  {
+    .list-size{
+        padding: 0;
+        background-color: blue;
+        margin: 0;
+        top: 300px;
+        left: 0;
+        right: 0;
+        width: auto;
+        max-width: 1550px;
+        height: auto;
+        overflow: hidden;
+        display: inline-block;
+        position: relative;
+    }
+} */
+
+@media screen and (max-width: 1200px)  {
+    .list-size{
+        padding: 0;
+        background-color: green;
+        margin: 0;
+        top: 300px;
+        left: 0;
+        right: 0;
+        width: auto;
+        max-width: 1280px;
+        height: auto;
+        overflow: hidden;
+        display: inline-block;
+        position: relative;
+    }
 }
