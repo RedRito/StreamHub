@@ -5,15 +5,20 @@ Creator = mongoose.model('Creator');
 Stream = mongoose.model('Stream');
 
 //used for timing
-const ONEDAY = 864000;
+const ONEDAY = 86400;
+const ONEMINUTE = 60;
+const ONESECOND = 1;
+const ONEHOUR = 3600;
 const FIVEDAYS = ONEDAY * 5;
 const ONEWEEK = ONEDAY * 7;
 const WEEK = 7;
-
+const headers = {
+    "X-Time-Zone": "America/Los_Angeles"
+}
 //need to update this function with rotating proxies
 exports.scrapeContent = function(creatorList){
-    // console.log(creatorList);
-    Promise.all(creatorList.map((creator) => axios.get(creator)))   //fetch all creator data in list
+    console.log(creatorList);
+    Promise.all(creatorList.map((creator) => axios.get(creator, {headers: {'Time-Zone': 'Australia/Sydney'}})))   //fetch all creator data in list
     .then((
         response
     ) => {    
@@ -29,9 +34,10 @@ exports.scrapeContent = function(creatorList){
             async (creator) => {
                 const data = await getCreatorData(creator);
                 console.log(data);
-                //first clean up creator streams 
-                // await deleteCreatorOldStreams(creator[0].name);
-                
+                if(data[0]){
+                    await deleteOldStreams(data[0]);
+                }
+
                 //loop through data
                 data.map(async(stream) => {
 
@@ -74,60 +80,6 @@ function parseData(creator){
     return jsonified2;
 }
 
-// async function getCreatorData(creator)
-// {
-//     let creatorObj = { name: "", canonicalName: "", icon: "", streams: [] };
-
-//     let headers = creator.header.c4TabbedHeaderRenderer
-//     if(headers) 
-//     {
-//         //canonical name and icon
-//         creatorObj.canonicalName = headers.title;
-//         creatorObj.icon = headers.avatar.thumbnails[2].url;
-//     }
-//     let main = creator.contents.twoColumnBrowseResultsRenderer.tabs
-//     //creator name
-//     creatorObj.name = main[0].tabRenderer.endpoint.browseEndpoint.canonicalBaseUrl
-
-//     console.log(creatorObj.name);
-
-//     // 30 streams from JSON last item in contents is for rendering
-//     let streamContent = main[3].tabRenderer.content.richGridRenderer.contents
-//     for(let i = 0; i < 30; i++)
-//     {
-//         if(!streamContent[i].richItemRenderer) break;   //end of stream content
-//         let streamObj = {
-//             streamId: "",
-//             unixTime: "",
-//             title: "",
-//             thumbnail: "",
-//             watching: false,
-//             waiting: false,
-//             amount: "",
-//             lastUpdated: ""
-//         }
-//         let content = streamContent[i].richItemRenderer.content.videoRenderer;
-//         if(content.publishedTimeText) 
-//         {
-//             await updateOldStream(content, creatorObj, streamObj);       
-//             if(streamObj.streamId.length != 0){
-//                 creatorObj.streams.push(streamObj);     //If stream is past, send to update
-//                 // console.log(streamObj);
-//             } 
-//         }
-//         else if(!content.upcomingEventData)
-//         {
-//             await updateOngoingStream(content, creatorObj, streamObj);
-//             if(streamObj.streamId.length != 0){
-//                 creatorObj.streams.push(streamObj);     
-//                 // console.log(streamObj);
-//             } 
-//         }
-//         else creatorObj.streams.push(createNewStream(content, streamObj)); //create a new stream object, add to creator stream list //NO NEED TO BE ASYNC
-//     }
-//     return creatorObj;
-// }
-
 async function getCreatorData(creator)
 {
     let streamsList = [];
@@ -137,7 +89,25 @@ async function getCreatorData(creator)
 
     // 30 streams from JSON last item in contents is for rendering
     let streamContent = main[3].tabRenderer.content.richGridRenderer.contents
-
+    //creator name
+    let creatorName = main[0].tabRenderer.endpoint.browseEndpoint.canonicalBaseUrl;
+    let canonicalName;
+    let icon;
+    if(headers) 
+    {
+        //canonical name and icon
+        canonicalName = headers.title;
+        icon = headers.avatar.thumbnails[2].url;
+    }
+    else    //headers not present use old data //helps to prevent missing icon from streams
+    {
+        const creatorList = await getCreatorDb({name: creatorName});
+        if(creatorList)
+        {
+            canonicalName = creatorList[0].canonicalName;
+            icon = creatorList[0].icon;
+        }
+    }
     for(let i = 0; i < 15; i++)
     {
         if(!streamContent[i].richItemRenderer) break;   //end of stream content
@@ -155,15 +125,9 @@ async function getCreatorData(creator)
             amount: "",
             lastUpdated: null
         }
-
-        if(headers) 
-        {
-            //canonical name and icon
-            streamObj.canonicalName = headers.title;
-            streamObj.icon = headers.avatar.thumbnails[2].url;
-        }
-        //creator name
-        streamObj.name = main[0].tabRenderer.endpoint.browseEndpoint.canonicalBaseUrl;
+        streamObj.name = creatorName;
+        streamObj.canonicalName = canonicalName;
+        streamObj.icon = icon;
 
         // current stream content in scraped streams array
         let content = streamContent[i].richItemRenderer.content.videoRenderer;
@@ -171,7 +135,6 @@ async function getCreatorData(creator)
         if(content.publishedTimeText) 
         {
             await updateOldStream(content, streamObj);    // NEW IMPLEMENTATION
-
             if(streamObj.streamId.length != 0){
                 streamsList.push(streamObj);     //If stream is past, send to update
                 // console.log(streamObj);
@@ -220,7 +183,7 @@ function createNewStream(streamContent, streamObj) // NEW
 {
     streamObj.unixTime = parseInt(streamContent.upcomingEventData.startTime, 10); //convert to Number
     streamObj.streamId = streamContent.videoId;
-    streamObj.thumbnail = streamContent.thumbnail.thumbnails[1].url; //subject to change, just size of thumbnail
+    streamObj.thumbnail = streamContent.thumbnail.thumbnails[3].url; //subject to change, just size of thumbnail
     streamObj.title = streamContent.title.runs[0].text;
     streamObj.waiting = true;
     (streamContent.shortViewCountText) ? streamObj.amount = streamContent.shortViewCountText.runs[0].text.toString() : streamObj.amount = '0';
@@ -228,21 +191,68 @@ function createNewStream(streamContent, streamObj) // NEW
     return streamObj;
 }
 
+//Calculates time of a stream or streaming obj
+//Streamed 10 hours ago -> unixTime
+function calculatePassingStreamTime(timeString)
+{
+    if(!timeString) return;
+    
+    
+    //First check if its an ongoing or old stream
+    const oldorOngoingStream = (timeString.includes("Streamed")) ?  "Streamed" : "Streaming";
+    let firstSlice = timeString.slice(timeString.indexOf(oldorOngoingStream), timeString.indexOf("ago"));
+    console.log("FIRST SLICE " + firstSlice);
+    let timeConst = null;
+    let timeMultiple = null;
+    //Get the unit of time
+    switch(true){
+        case firstSlice.includes("week"):
+            return;
+        case firstSlice.includes("month"):
+            return;
+        case firstSlice.includes("year"):
+            return;
+        case firstSlice.includes("day"):
+            timeConst = firstSlice.indexOf("day");
+            timeMultiple = ONEDAY;
+            break;
+        case firstSlice.includes("hour"):
+            timeConst = firstSlice.indexOf("hour");
+            timeMultiple = ONEHOUR;
+            break;
+        case firstSlice.includes("minute"):
+            timeConst = firstSlice.indexOf("minute");
+            timeMultiple = ONEMINUTE;
+            break
+        case firstSlice.includes("second"):
+            timeConst = firstSlice.indexOf("second");
+            timeMultiple = ONESECOND;
+            break;
+        default:
+            timeConst = null;
+    }
+    const secondSlice = timeString.slice(firstSlice.indexOf(oldorOngoingStream) + oldorOngoingStream.length, timeConst);    // Streamed 5 hours -> 5
+    console.log("TIME VALUE IS " + secondSlice + " MULTIPLE IS " + timeMultiple);
+    const timeValue = parseInt(secondSlice, 10) * timeMultiple; //convert to integer and multiply by multiple
+    // APPROXIMATE past time, not 100% accurate
+    // console.log("TIME VALUE IS " + timeValue);
+    return getCurrentTime() - timeValue;    //100000 - 
+}
+
 // Gets old VOD stream data and updates streamObj
 async function updateOldStream(streamContent, streamObj) 
 {
     let streamTime = streamContent.publishedTimeText.simpleText;
     // calculate stream past date
-    let one = streamTime.indexOf("Streamed");
-    let two = streamTime.indexOf("ago");
-    streamTime = streamTime.slice(one, two);
+    streamTime = calculatePassingStreamTime(streamTime);
+    console.log(streamTime);
+    if(!streamTime) return;
+    if((getCurrentTime() - streamTime) > FIVEDAYS)
+    {
+        console.log("too old");
+        return;
+    }
     
-    let middle;
-    if(streamTime.includes("week") || streamTime.includes("month") || streamTime.includes("year")) return;
-    if(streamTime.includes("days")) middle = streamTime.indexOf("days");
-    streamTime = parseInt(streamTime.slice(0, middle), 10); //get number value
-    if(streamTime >= WEEK) return; // Stream too far return empty obj
-
     //get stream from db
     streamObj.streamId = streamContent.videoId;
     const streamDb = await getStreamDb(streamObj.streamId);
@@ -251,19 +261,19 @@ async function updateOldStream(streamContent, streamObj)
     else inDb(streamDb);
 
     function notInDb(){
-        streamObj.unixTime = getCurrentTime();
-        streamObj.thumbnail = streamContent.thumbnail.thumbnails[1].url;
+        streamObj.unixTime = streamTime;
+        streamObj.thumbnail = streamContent.thumbnail.thumbnails[3].url;
         streamObj.title = streamContent.title.runs[0].text;
-        (streamContent.shortViewCountText) ? streamObj.amount = streamContent.shortViewCountText.simpleText.toString() : streamObj.amount = '0';
+        streamObj.amount = (streamContent.shortViewCountText) ? streamContent.shortViewCountText.simpleText.toString() : '0';
         streamObj.lastUpdated = getCurrentTime();
         return streamObj;
     }
     function inDb(streamDb)
     {
-        (streamDb.watching || streamDb.waiting) ? streamObj.unixTime = getCurrentTime() : streamObj.unixTime = streamDb.unixTime;   //if new to becoming old stream and stream is found in database
-        streamObj.thumbnail = streamContent.thumbnail.thumbnails[1].url;
+        streamObj.unixTime = (streamDb.watching || streamDb.waiting) ? streamTime : streamDb.unixTime;   //if new to becoming old stream and stream is found in database
+        streamObj.thumbnail = streamContent.thumbnail.thumbnails[3].url;
         streamObj.title = streamContent.title.runs[0].text;
-        (streamContent.shortViewCountText) ? streamObj.amount = streamContent.shortViewCountText.simpleText.toString() : streamObj.amount = '0';
+        streamObj.amount = (streamContent.shortViewCountText) ? streamContent.shortViewCountText.simpleText.toString() : '0';
         streamObj.lastUpdated = getCurrentTime();
         return streamObj;
     }
@@ -281,7 +291,7 @@ async function updateOngoingStream(streamContent, streamObj)
     else oldInDb(streamDb);
     function notInDb(){
         streamObj.unixTime = getCurrentTime();
-        streamObj.thumbnail = streamContent.thumbnail.thumbnails[1].url;
+        streamObj.thumbnail = streamContent.thumbnail.thumbnails[3].url;
         streamObj.title = streamContent.title.runs[0].text;
         streamObj.watching = true;
         (streamContent.shortViewCountText) ? streamObj.amount = streamContent.shortViewCountText.runs[0].text.toString() : streamObj.amount = '0';
@@ -291,7 +301,7 @@ async function updateOngoingStream(streamContent, streamObj)
     function newInDb(){
         // New ongoing stream
         streamObj.unixTime = getCurrentTime();
-        streamObj.thumbnail = streamContent.thumbnail.thumbnails[1].url;
+        streamObj.thumbnail = streamContent.thumbnail.thumbnails[3].url;
         streamObj.title = streamContent.title.runs[0].text;
         streamObj.waiting = false;
         streamObj.watching = true;
@@ -302,7 +312,7 @@ async function updateOngoingStream(streamContent, streamObj)
     function oldInDb(streamDb){
         // Old ongoing stream
         streamObj.unixTime = streamDb.unixTime;
-        streamObj.thumbnail = streamContent.thumbnail.thumbnails[1].url;
+        streamObj.thumbnail = streamContent.thumbnail.thumbnails[3].url;
         streamObj.title = streamContent.title.runs[0].text;
         streamObj.watching = true;
         (streamContent.shortViewCountText) ? streamObj.amount = streamContent.shortViewCountText.runs[0].text.toString() : streamObj.amount = '0';
@@ -321,6 +331,24 @@ function createDatabaseStreamObj(data)
 }
 //TODO how do we update / delete old streams 
 // one way to do it is to get all creators, check through their streams and delete ones that dont match requirements
+async function deleteOldStreams(creator)
+{
+    try{
+        const creatorList = await getCreatorDb(creator);
+        //map through and delete those that dont match;
+        creatorList.map(async (stream) => {
+            const currTime = getCurrentTime();
+            if((currTime - stream.unixTime) >= FIVEDAYS)   //stream older than 5 days
+            {
+                await Stream.deleteOne({streamId: stream.streamId});
+            }
+        })
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
 
 // Updates database
 async function updateDatabase(stream)

@@ -1,0 +1,28 @@
+.topBar{
+    width: auto;
+    height: 100px;
+    margin: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 0;
+    z-index: 100;
+    overflow: hidden;
+    position: fixed;
+    background-color: #0F0F0F;
+}
+
+.topLogo{
+    width: 400px;
+    height: 100px;
+    margin: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: calc(50% - 200px);
+    /* transform: translate(0%, 0%); */
+    z-index: 100;
+    position: fixed;
+    background-color: red;
+}
