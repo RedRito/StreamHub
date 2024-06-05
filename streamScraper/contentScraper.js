@@ -3,6 +3,9 @@ const axios = require('axios');
 var mongoose = require('mongoose'); 
 Creator = mongoose.model('Creator');
 Stream = mongoose.model('Stream');
+const VSPO = require('./VSPO');
+const Hololive = require('./Hololive');
+const { link } = require('fs');
 
 //used for timing
 const ONEDAY = 86400;
@@ -11,20 +14,17 @@ const ONESECOND = 1;
 const ONEHOUR = 3600;
 const FIVEDAYS = ONEDAY * 5;
 const ONEWEEK = ONEDAY * 7;
-const WEEK = 7;
-const headers = {
-    "X-Time-Zone": "America/Los_Angeles"
-}
 //need to update this function with rotating proxies
 exports.scrapeContent = function(creatorList){
     console.log(creatorList);
-    Promise.all(creatorList.map((creator) => axios.get(creator, {headers: {'Time-Zone': 'Australia/Sydney'}})))   //fetch all creator data in list
+    Promise.all(creatorList.map((creator) => axios.get(creator)))   //fetch all creator data in list
     .then((
         response
     ) => {    
         let creators = [];
         let creatorJsonData = [];
         response.map((response) => {creators.push(response.data)});
+
         //get JSON for all creators
         creators.map((creator) => {creatorJsonData.push(parseData(creator))});
 
@@ -34,21 +34,18 @@ exports.scrapeContent = function(creatorList){
             async (creator) => {
                 const data = await getCreatorData(creator);
                 console.log(data);
-                if(data[0]){
-                    await deleteOldStreams(data[0]);
+                if(data){
+                    //loop through data
+                    data.map(async(stream) => {
+                        //check if stream is in database
+                        const ifStream = await getStreamDb(stream.streamId);
+                        if(!ifStream)
+                        {
+                            await createDatabaseStreamObj(stream);
+                        }
+                        else await updateDatabase(stream);
+                    })
                 }
-
-                //loop through data
-                data.map(async(stream) => {
-
-                    //check if stream is in database
-                    const ifStream = await getStreamDb(stream.streamId);
-                    if(!ifStream)
-                    {
-                        await createDatabaseStreamObj(stream);
-                    }
-                    else await updateDatabase(stream);
-                })
             }
         );
 
@@ -59,22 +56,20 @@ exports.scrapeContent = function(creatorList){
 }
 
 
-//Parses and returns a JSON of ytInitialData
+//Parses and returns a JSON of ytInitialData from fetch
 function parseData(creator){
-    //first stringify the data
+    // Stringify the data
     let stringified = JSON.stringify(creator);
-
     // Then slice till start of needed data
     let start = stringified.indexOf("var ytInitialData = {");
     let sliced = stringified.slice(start);
-
     // Next slice till end of data
     start = sliced.indexOf("{");
     let end = sliced.indexOf(";</script>");
     let data = sliced.slice(start, end);
     // Need to turn it into a string to be jsonified
     let finished = "\"".concat(data).concat("\"");
-    // Must be parsed twice for proper data, else errors in format
+    // Must be parsed twice for proper data
     let jsonified = JSON.parse(finished);  
     let jsonified2 = JSON.parse(jsonified);
     return jsonified2;
@@ -86,9 +81,20 @@ async function getCreatorData(creator)
 
     let headers = creator.header.c4TabbedHeaderRenderer;
     let main = creator.contents.twoColumnBrowseResultsRenderer.tabs;
-
-    // 30 streams from JSON last item in contents is for rendering
-    let streamContent = main[3].tabRenderer.content.richGridRenderer.contents
+    // console.log(main);
+    let LiveTab = 0; 
+    while(main[LiveTab])
+    {
+        if(LiveTab > 5) break;
+        if(main[LiveTab].tabRenderer.title == 'Live' || main[LiveTab].tabRenderer.selected)
+        {
+            break;
+        }
+        LiveTab++;
+    }
+    if(!main[LiveTab].tabRenderer.content) return
+    if(!main[LiveTab].tabRenderer.content.richGridRenderer) return
+    let streamContent = main[LiveTab].tabRenderer.content.richGridRenderer.contents
     //creator name
     let creatorName = main[0].tabRenderer.endpoint.browseEndpoint.canonicalBaseUrl;
     let canonicalName;
@@ -102,14 +108,15 @@ async function getCreatorData(creator)
     else    //headers not present use old data //helps to prevent missing icon from streams
     {
         const creatorList = await getCreatorDb({name: creatorName});
-        if(creatorList)
+        if(creatorList[0])
         {
-            canonicalName = creatorList[0].canonicalName;
-            icon = creatorList[0].icon;
+            canonicalName = creatorList[0].canonicalName ? creatorList[0].canonicalName : '';
+            icon = creatorList[0].icon ? creatorList[0].icon : '';
         }
     }
     for(let i = 0; i < 15; i++)
     {
+        if(!streamContent[i]) break; //End of any content //aka less than 15 streams
         if(!streamContent[i].richItemRenderer) break;   //end of stream content
         let streamObj = { 
             name: "", 
@@ -128,6 +135,8 @@ async function getCreatorData(creator)
         streamObj.name = creatorName;
         streamObj.canonicalName = canonicalName;
         streamObj.icon = icon;
+        if(VSPO.some(creatorString => creatorString.includes(creatorName))) streamObj.company = "VSPO"
+        else if(Hololive.some(creatorString => creatorString.includes(creatorName))) streamObj.company = "Hololive"
 
         // current stream content in scraped streams array
         let content = streamContent[i].richItemRenderer.content.videoRenderer;
@@ -165,21 +174,20 @@ async function getStreamDb(streamId){
     if(!streamId) return;  //no id invalid input
     const dbStream = await Stream.findOne({streamId: streamId});
     // Debugging
-    // console.log(streamId);
     // console.log(dbStream);
     if(!dbStream) return; // stream not found return
-    return dbStream; //return stream obj
+    return dbStream;
 }
 
 // fetches and returns creator object, else it returns null reference
 async function getCreatorDb(creator){
     if(!creator.name) return; //Invalid creator return
     const dbCreator = await Stream.find({name: creator.name});
-    return dbCreator; //return creator obj
+    return dbCreator;
 }
 
-
-function createNewStream(streamContent, streamObj) // NEW
+// Creates new stream
+function createNewStream(streamContent, streamObj) 
 {
     streamObj.unixTime = parseInt(streamContent.upcomingEventData.startTime, 10); //convert to Number
     streamObj.streamId = streamContent.videoId;
@@ -196,12 +204,9 @@ function createNewStream(streamContent, streamObj) // NEW
 function calculatePassingStreamTime(timeString)
 {
     if(!timeString) return;
-    
-    
     //First check if its an ongoing or old stream
     const oldorOngoingStream = (timeString.includes("Streamed")) ?  "Streamed" : "Streaming";
     let firstSlice = timeString.slice(timeString.indexOf(oldorOngoingStream), timeString.indexOf("ago"));
-    console.log("FIRST SLICE " + firstSlice);
     let timeConst = null;
     let timeMultiple = null;
     //Get the unit of time
@@ -232,11 +237,9 @@ function calculatePassingStreamTime(timeString)
             timeConst = null;
     }
     const secondSlice = timeString.slice(firstSlice.indexOf(oldorOngoingStream) + oldorOngoingStream.length, timeConst);    // Streamed 5 hours -> 5
-    console.log("TIME VALUE IS " + secondSlice + " MULTIPLE IS " + timeMultiple);
     const timeValue = parseInt(secondSlice, 10) * timeMultiple; //convert to integer and multiply by multiple
-    // APPROXIMATE past time, not 100% accurate
-    // console.log("TIME VALUE IS " + timeValue);
-    return getCurrentTime() - timeValue;    //100000 - 
+    // APPROXIMATE past time from server fetch, not accurate
+    return getCurrentTime() - timeValue;
 }
 
 // Gets old VOD stream data and updates streamObj
@@ -245,14 +248,8 @@ async function updateOldStream(streamContent, streamObj)
     let streamTime = streamContent.publishedTimeText.simpleText;
     // calculate stream past date
     streamTime = calculatePassingStreamTime(streamTime);
-    console.log(streamTime);
     if(!streamTime) return;
-    if((getCurrentTime() - streamTime) > FIVEDAYS)
-    {
-        console.log("too old");
-        return;
-    }
-    
+    if((getCurrentTime() - streamTime) > FIVEDAYS)  return;
     //get stream from db
     streamObj.streamId = streamContent.videoId;
     const streamDb = await getStreamDb(streamObj.streamId);
@@ -329,23 +326,21 @@ function createDatabaseStreamObj(data)
     var newStream = new Stream(data);
     newStream.save();
 }
-//TODO how do we update / delete old streams 
-// one way to do it is to get all creators, check through their streams and delete ones that dont match requirements
-async function deleteOldStreams(creator)
+
+// Delete old streams that past 5 days from current server time
+exports.deleteContent = async function deleteOldStreams()
 {
     try{
-        const creatorList = await getCreatorDb(creator);
-        //map through and delete those that dont match;
-        creatorList.map(async (stream) => {
+        for await(const stream of Stream.find()){
             const currTime = getCurrentTime();
-            if((currTime - stream.unixTime) >= FIVEDAYS)   //stream older than 5 days
+            if((currTime - stream.unixTime) >= FIVEDAYS)
             {
                 await Stream.deleteOne({streamId: stream.streamId});
-            }
-        })
+            } 
+        }
     }
     catch(err){
-        console.log(err)
+        console.log(err);
     }
 }
 
@@ -364,17 +359,3 @@ async function updateDatabase(stream)
         console.log(err);
     }
 }
-// Updates database
-// async function updateDatabase(creator)
-// {
-//     try{
-//         await Creator.findOneAndUpdate(
-//             {name: creator.name},
-//             {$set: { streams: creator.streams }},
-//             {new: true}
-//             );
-//     }
-//     catch(err){
-//         console.log(err);
-//     }
-// }

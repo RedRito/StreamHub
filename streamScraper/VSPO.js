@@ -1,0 +1,22 @@
+module.exports = [
+    'https://www.youtube.com/@KagaSumire/streams',
+    'https://www.youtube.com/@nazunakaga/streams',
+    'https://www.youtube.com/@totokogara/streams',
+    'https://www.youtube.com/@uruhaichinose/streams',
+    'https://www.youtube.com/@963Noah/streams',
+    'https://www.youtube.com/@hinanotachiba7/streams',
+    'https://www.youtube.com/@ren_kisaragi__/streams',
+    'https://www.youtube.com/@tosakimimi3369/streams',
+    'https://www.youtube.com/@asumi_sena/streams',
+    'https://www.youtube.com/@lisahanabusa/streams',
+    'https://www.youtube.com/@KaminariQpi/streams',
+    'https://www.youtube.com/@yakumo_beni/streams',
+    'https://www.youtube.com/@AizawaEma/streams',
+    'https://www.youtube.com/@shinomiyaruna/streams',
+    'https://www.youtube.com/@tsuna_nekota/streams',
+    'https://www.youtube.com/@Met_Komori/streams',
+    'https://www.youtube.com/@shiranamiramune/streams',
+    'https://www.youtube.com/@YanoKuromu/streams',
+    'https://www.youtube.com/@Kokage_Tsumugi/streams',
+    'https://www.youtube.com/@akarindao/streams'
+]

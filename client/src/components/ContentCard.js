@@ -1,27 +1,21 @@
 import { Link } from "react-router-dom";
+import React, { useEffect, useState } from 'react'
 import "./ContentCard.css"
-//https://i.ytimg.com/vi/K4JbokXjNhg/hqdefault.jpg?sqp=-oaymwEiCMQBEG5IWvKriqkDFQgBFQAAAAAYASUAAMhCPQCAokN4AQ==&rs=AOn4CLA_dLGJes6N7x5SMtmqrIxeYRk-BA
-// https://i.ytimg.com/vi/QhRxBbAGHQA/hqdefault.jpg?sqp=-oaymwEjCPYBEIoBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=%5Cu0026rs=AOn4CLCUkHdSp4L0XaHdT1uWXiIpVlTZSQ
-// https://i.ytimg.com/vi/QhRxBbAGHQA/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=%5Cu0026rs=AOn4CLCpnCcrPqQmwgSMNkNnR00_xIsV-g
-// https://yt3.googleusercontent.com/WO7ItKNmy6tW_NQ82g8c1y74CZSw6GsSdynsE5s2csuEok2fHRrAaGcBV3JJO-2BxEOXXA8lvw=s176-c-k-c0x00ffffff-no-rj
-// const cardTime = stream.unixTime.toString();
-//     const creatorName = stream.name
-//     const thumbnail = stream.thumbnail
-//     const icon = stream.icon
-//     const linkto = "https://www.youtube.com/watch?" + stream.streamId;
+import ContentCardEnlarged from './ContentCardEnlarged.js';
+
 
 
 
 function ContentCard(props){
+    const [isHovering, setIsHovering] = useState(false);
+    let timeOut = null;
     const stream = props.stream;
-    // const timeZone = props.timeZone;
     const maxNameLength = 7;
-
-    const creatorName = (stream.canonicalName.length > maxNameLength) ? stream.canonicalName.slice(0, maxNameLength) : stream.canonicalName;
+    let creatorName = stream.name;
+    if(stream.canonicalName) creatorName = (stream.canonicalName.length > maxNameLength) ? stream.canonicalName.slice(0, maxNameLength) : stream.canonicalName;
     const thumbnail = stream.thumbnail
     const icon = stream.icon
     const linkto = "https://www.youtube.com/watch?v=" + stream.streamId;
-    
     const location = "en-US"
     const options = {
         hour: "numeric",
@@ -31,8 +25,24 @@ function ContentCard(props){
     }
     const date = new Intl.DateTimeFormat({location}, options).format(new Date(stream.unixTime * 1000));
 
+    const divRef = React.useRef<HTMLDivElement>(null);
+    const divNode = divRef.current;
+
+    const handleMouseOver = () => {
+        timeOut = setTimeout(() => setIsHovering(true), 1000);
+        //setIsHovering(true);
+    };
+    
+    const handleMouseOut = () => {
+        clearTimeout(timeOut);
+        setIsHovering(false);
+    };
+
+    // {isHovering && <ContentCardEnlarged stream = {creator} handleMouseOut = {handleMouseOut}/>}
+    
     return(
-        <div className="card">
+        (isHovering) ? (<ContentCardEnlarged stream = {stream} onMouseOut = {handleMouseOut}/>) :
+        <div className={stream.watching ? "cardPlaying" : "card"} onMouseOver={handleMouseOver}>
             <a href={linkto} target="_blank">
             <div className="top-card">
                 <div className="card-text card-text-time">

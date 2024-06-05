@@ -9,7 +9,6 @@
     display: block;
     position: fixed;
     overflow-x: hidden;
-    overflow-y: auto;
     transition: all .3s ease-in-out;
 }
 .sideBarBody::-webkit-scrollbar{
@@ -70,6 +69,9 @@ ul{
     overflow-y: auto;
     transition: left .3s ease-in-out;
 }
+.sideBarBodyHidden::-webkit-scrollbar{
+    display: none;
+}
 
 .sideBarBodyNotHidden{
     width: 200px;
@@ -84,6 +86,9 @@ ul{
     overflow-x: hidden;
     overflow-y: auto;
     transition: left .3s ease-in-out;
+}
+.sideBarBodyNotHidden::-webkit-scrollbar{
+    display: none;
 }
 .buttonClicked{
     top: 80px;
