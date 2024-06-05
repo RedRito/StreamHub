@@ -1,0 +1,39 @@
+.enlargedCard{
+    background-color: white;
+    border-radius: 8px;
+    width: 730px;
+    height: 600px;
+    top: 10%;
+    left: calc(50% - 365px);
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    box-shadow: -3px 8px 15px grey;
+    padding: 0;
+    z-index: 99;
+    display: inline-block;
+    position: fixed;
+    transition: all .3s ease-in-out;
+}
+
+.exit{
+    width: 20px;
+    height: 20px;
+    margin-left: 700px;
+    margin-top: 10px;
+    background-color: red;
+    display: inline-block;
+    position: fixed;
+}
+
+.embedded{
+    margin-left: 15px;
+    margin-top: 50px;
+    width: 700px;
+    height: 500px;
+    box-shadow: -1px 5px 20px red;
+    z-index: 99;
+    display: inline-flex;
+    position: fixed;
+}

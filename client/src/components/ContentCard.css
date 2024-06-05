@@ -10,6 +10,21 @@
     box-shadow: -3px 8px 15px grey;
     padding: 0;
     display: inline-block;
+    transition: all ease-in-out;
+}
+.card:hover{
+    background-color: grey;
+    border-radius: 8px;
+    width: 270px;
+    height: 250px;
+    margin-left: 20px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    box-shadow: -3px 8px 15px grey;
+    padding: 0;
+    display: inline-block;
+    transition-duration: 3s;
 }
 /* Box shadow for shadowing, first and second parameter is x and y,  third is blue and fourth is color */
 
@@ -28,6 +43,20 @@
     width: auto;
     height: 30px;
     margin: 0;
+}
+
+.cardPlaying{
+    background-color: white;
+    border-radius: 8px;
+    width: 270px;
+    height: 250px;
+    margin-left: 20px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    margin-top: 0px;
+    box-shadow: -3px 8px 15px red;
+    padding: 0;
+    display: inline-block;
 }
 
 .middle-card{

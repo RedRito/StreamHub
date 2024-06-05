@@ -6,7 +6,7 @@ import HomePage from './components/HomePage';
 
 
 function App() {
-  const [timeZone, setTimeZone] = useState("UTC");
+  const [timeZone, setTimeZone] = useState("America/Los_Angeles");
   function handleChange(timeZone){
     // console.log(timeZone);
     setTimeZone(timeZone);
@@ -17,7 +17,8 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path = '/' element = {<HomePage timeZone = {timeZone} handleChange = {handleChange}/>}/>
-            <Route path = '/Hololive' element = {<HomePage queryType = "name" queryValue = "/@NatsuiroMatsuri"/>}/>
+            <Route path = '/Hololive' element = {<HomePage queryType = "company" queryValue = "Hololive" timeZone = {timeZone} handleChange = {handleChange}/>}/>
+            <Route path = '/VSPO' element = {<HomePage queryType = "company" queryValue = "VSPO" timeZone = {timeZone} handleChange = {handleChange}/>}/>
           </Routes>
         </BrowserRouter>
   );

@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
 import "./ContentList.css"
 import ContentCard from "./ContentCard";
-
-const arr = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15, 16, 17];
+import ContentCardEnlarged from './ContentCardEnlarged.js';
 
 
 const ContentList = (props) => {
     // console.log("IN CONTENTLIST " + props.queryType + props.queryValue);
     const [creatorList, setCreatorList] = useState(null);
+    
+
+    
 
     useEffect(() => {
         fetchData();
@@ -43,6 +45,7 @@ const ContentList = (props) => {
 
     if(creatorList){
         var listComponents = creatorList.map((creator) => {
+            // handleCreatorChange(creator);
             // console.log(creator);
             return(
                 <li key={creator.streamId} className="test">
