@@ -16,6 +16,10 @@ exports.getStreams =  async function(req, res){
     try{
         let query = {$or: [{watching: true}, {waiting: true}]};
         const requestData = req.body;
+
+        if(requestData.streamType){
+            query = {$and: [{watching: false}, {waiting: false}]}
+        }
         //if there is a req query
         // console.log(req.body);
         if(requestData.queryType && requestData.queryValue){

@@ -18,5 +18,9 @@ module.exports = [
     'https://www.youtube.com/@shiranamiramune/streams',
     'https://www.youtube.com/@YanoKuromu/streams',
     'https://www.youtube.com/@Kokage_Tsumugi/streams',
-    'https://www.youtube.com/@akarindao/streams'
+    'https://www.youtube.com/@akarindao/streams',
+    'https://www.youtube.com/@RemiaAotsuki/streams',
+    'https://www.youtube.com/@AryaKuroha/streams',
+    'https://www.youtube.com/@jirajisaki/streams'
+
 ]

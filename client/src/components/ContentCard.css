@@ -24,7 +24,7 @@
     box-shadow: -3px 8px 15px grey;
     padding: 0;
     display: inline-block;
-    transition-duration: 3s;
+    transition-duration: .5s;
 }
 /* Box shadow for shadowing, first and second parameter is x and y,  third is blue and fourth is color */
 
@@ -160,6 +160,14 @@
     display: inline-block;
 }
 
+.hoverCover{
+    background-color: grey;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
 span {
     font-size: 30px;
     display: inline-block;
@@ -168,15 +176,7 @@ span {
     padding: 0;
     color: white;
 }
-  
-@keyframes scrollText {
-    from {
-    transform: translateX(0%);
-    }
-    to {
-        transform: translateX(-50%);
-    }
-}
+
 
 /* @media screen and (max-width: 1550px)  {
     .card{

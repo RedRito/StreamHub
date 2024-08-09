@@ -8,13 +8,11 @@ var i = 0;
 
 exports.automateScrape = function(time){
     console.log("Starting Youtube Scraper");
-    cron.schedule("*/60 * * * * *", function () {
+    cron.schedule("*/30 * * * * *", function () {
         let creators = [];
-        if(i == 0){
-            creators.push(creatorList[i]);
-            i++;
-        }
-        else i++;
+        if(!creatorList && creatorList.length) return;
+        creators.push(creatorList[i]);
+        i++;
         while(i % 10 != 0)
         {
             if(i % creatorList.length == 0) break;

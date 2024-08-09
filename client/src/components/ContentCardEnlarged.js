@@ -11,15 +11,14 @@ function ContentCardEnlarged(props)
 
     const embeddedStream = "https://www.youtube.com/embed/" + stream.streamId + "?&autoplay=1"
 
-
     return(
         <>
-        <div className="enlargedCard" onMouseOut={props.onMouseOut}>
-           
-            <iframe className="embedded" src = {embeddedStream} frameBorder="0" allowFullScreen>
+        <div className="card" onMouseOut={props.onMouseOut}>
 
-            </iframe>
         </div>
+            {/* <iframe className="card" src = {embeddedStream} frameBorder="0" allowFullScreen onMouseOut={props.onMouseOut}>
+
+            </iframe> */}
         </>
     )
 };
