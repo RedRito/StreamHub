@@ -5,7 +5,8 @@
     top: 0;
     left: 0;
     z-index: 100;
-    background-color: white;
+    background-color: #696969;
+    
     display: block;
     position: fixed;
     overflow-x: hidden;
@@ -26,30 +27,28 @@ ul{
     list-style-type: none;
 }
 .listBox{
-    margin-top: 20px;
+    margin-top: 0px;
     margin-left: -40px;
     padding: 0;
     width: 300px;
     height: 50px;
-    background-color: blue;
+    background-color: #696969;
+    border-top: solid 1px grey;
     display: inline-block;
     transition: .3s;
 }
 .text{
-    margin-top: 0px;
+    margin-top: 10px;
     margin-left: 20px;
     padding: 0;
     width: auto;
-    max-width: 200px;
     height: auto;
-    /* background-color: red; */
-    color: brown;
+    color: white;
     box-sizing: border-box;
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
     text-decoration: none;
     text-align: justify;
     display: inline-block;
-    
 }
 .listBox:hover{
     background-color: aqua;
@@ -62,7 +61,7 @@ ul{
     top: 0;
     left: -100%;
     z-index: 100;
-    background-color: purple;
+    background-color: #696969;
     display: block;
     position: fixed;
     overflow-x: hidden;
@@ -80,7 +79,7 @@ ul{
     top: 0;
     left: 0;
     z-index: 100;
-    background-color: blue;
+    background-color: #696969;
     display: block;
     position: fixed;
     overflow-x: hidden;
@@ -90,6 +89,20 @@ ul{
 .sideBarBodyNotHidden::-webkit-scrollbar{
     display: none;
 }
+
+.form{
+    left: 50px;
+    right: 50px;
+    display: block;
+}
+
+.dropdown{
+    width: 200px;
+    height: 30px;
+    display: block;
+    overflow-x: hidden;
+}
+
 .buttonClicked{
     top: 80px;
     left: 20px;
@@ -126,9 +139,88 @@ ul{
         height: 20px;
         z-index: 100;
         background-color: red;
-        position: relative;
+        position: fixed;
         display: block;
         cursor: pointer;
         transition: left .3s ease-in-out;
     }
+    .cross-clicked{
+        margin: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        position: fixed;
+        cursor: pointer;
+        top: 80px;
+        left: 200px;
+        width: 20px;
+        height: 20px;
+        z-index: 100;
+        background: red;
+        transition: left .3s ease-in-out;
+
+        &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      top: (20px - 1px) / 2;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: black;
+      border-radius: 1px;
+    }
+  
+    &:before {
+      transform: rotate(45deg);
+    }
+  
+    &:after {
+      transform: rotate(-45deg);
+    }
+  
+    span {
+      display: block;
+    }
+    }
 }
+
+.cross {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    position: fixed;
+    cursor: pointer;
+    top: 80px;
+    left: 20px;
+    width: 20px;
+    height: 20px;
+    z-index: 100;
+    background: red;
+  
+    &:before,
+    &:after {
+      content: '';
+      position: absolute;
+      top: (20px - 1px) / 2;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: black;
+      border-radius: 1px;
+    }
+  
+    &:before {
+      transform: rotate(45deg);
+    }
+  
+    &:after {
+      transform: rotate(-45deg);
+    }
+  
+    span {
+      display: block;
+    }
+  
+  }

@@ -19,7 +19,7 @@ const HomePage = (props) => {
         <div className="body">
             <TopBar/>
             <SideBar timeZone = {props.timeZone} handleChange = {props.handleChange}/>
-            <ContentList queryType = {queryType} queryValue = {queryValue} timeZone = {props.timeZone}/>
+            <ContentList queryType = {queryType} queryValue = {queryValue} streamType = {props.streamType} timeZone = {props.timeZone}/>
         </div>
     )};
 

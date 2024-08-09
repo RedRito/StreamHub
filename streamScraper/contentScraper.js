@@ -5,6 +5,7 @@ Creator = mongoose.model('Creator');
 Stream = mongoose.model('Stream');
 const VSPO = require('./VSPO');
 const Hololive = require('./Hololive');
+const Neoporte = require('./Neoporte');
 const { link } = require('fs');
 
 //used for timing
@@ -33,8 +34,10 @@ exports.scrapeContent = function(creatorList){
         creatorJsonData.map(
             async (creator) => {
                 const data = await getCreatorData(creator);
+                
                 console.log(data);
-                if(data){
+                if(data && data.length){
+                    await deleteUnarchivedStreams(data);
                     //loop through data
                     data.map(async(stream) => {
                         //check if stream is in database
@@ -50,8 +53,8 @@ exports.scrapeContent = function(creatorList){
         );
 
     }).catch(function(error){
-        console.log("THERES AN ERR");
         console.log(error);
+        console.log("THERES AN ERR");
     });
 }
 
@@ -78,8 +81,12 @@ function parseData(creator){
 async function getCreatorData(creator)
 {
     let streamsList = [];
+    let headers;
+    if(!creator) return;
+    if(!creator.header) headers = null;
+    else headers = creator.header.c4TabbedHeaderRenderer;
 
-    let headers = creator.header.c4TabbedHeaderRenderer;
+    if(!creator.contents) return;
     let main = creator.contents.twoColumnBrowseResultsRenderer.tabs;
     // console.log(main);
     let LiveTab = 0; 
@@ -107,7 +114,7 @@ async function getCreatorData(creator)
     }
     else    //headers not present use old data //helps to prevent missing icon from streams
     {
-        const creatorList = await getCreatorDb({name: creatorName});
+        const creatorList = await getCreatorDb(creatorName);
         if(creatorList[0])
         {
             canonicalName = creatorList[0].canonicalName ? creatorList[0].canonicalName : '';
@@ -135,8 +142,7 @@ async function getCreatorData(creator)
         streamObj.name = creatorName;
         streamObj.canonicalName = canonicalName;
         streamObj.icon = icon;
-        if(VSPO.some(creatorString => creatorString.includes(creatorName))) streamObj.company = "VSPO"
-        else if(Hololive.some(creatorString => creatorString.includes(creatorName))) streamObj.company = "Hololive"
+        streamObj.company = await getCompany(creatorName);
 
         // current stream content in scraped streams array
         let content = streamContent[i].richItemRenderer.content.videoRenderer;
@@ -163,6 +169,19 @@ async function getCreatorData(creator)
     return streamsList;
 }
 
+//Check if name is in a specific company, returns given company
+async function getCompany(name){
+    if(!name){
+        return;
+    }
+    let companyName = "";
+    if(VSPO.some(creatorString => creatorString.includes(name))) companyName = "VSPO";
+    else if(Hololive.some(creatorString => creatorString.includes(name))) companyName = "Hololive";
+    else if(Neoporte.some(creatorString => creatorString.includes(name))) companyName = "Neoporte";
+
+    return companyName;
+}
+
 // Get current epoch time in miliseconds.
 function getCurrentTime()
 {
@@ -180,9 +199,9 @@ async function getStreamDb(streamId){
 }
 
 // fetches and returns creator object, else it returns null reference
-async function getCreatorDb(creator){
-    if(!creator.name) return; //Invalid creator return
-    const dbCreator = await Stream.find({name: creator.name});
+async function getCreatorDb(name){
+    if(!name) return; //Invalid creator return
+    const dbCreator = await Stream.find({name: name});
     return dbCreator;
 }
 
@@ -344,6 +363,23 @@ exports.deleteContent = async function deleteOldStreams()
     }
 }
 
+// Delete old streams of a creator, mainly used to get rid of membership streams that dissapear
+async function deleteUnarchivedStreams(creator){
+    try{
+        const creatorStreams = await getCreatorDb(creator[0].name);
+        if(creatorStreams){
+            creatorStreams.map(async(stream) => {
+                if(!creator.some(streamObj => streamObj.streamId === stream.streamId)){
+                    //console.log(creator[0].name + " has the stream " + stream.title + "Unarchived");
+                    await Stream.deleteOne({streamId: stream.streamId});
+                }
+            })
+        }
+    }
+    catch(err){
+        console.log(err);
+    }
+}
 
 // Updates database
 async function updateDatabase(stream)

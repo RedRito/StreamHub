@@ -84,6 +84,14 @@ module.exports = [
     'https://www.youtube.com/@ShioriNovella/streams',
     'https://www.youtube.com/@KosekiBijou/streams',
     'https://www.youtube.com/@NerissaRavencroft/streams',
-    'https://www.youtube.com/@FUWAMOCOch/streams'
+    'https://www.youtube.com/@FUWAMOCOch/streams',
+
+    //4th Gen EN
+    'https://www.youtube.com/@holoen_erbloodflame/streams',
+    'https://www.youtube.com/@holoen_gigimurin/streams',
+    'https://www.youtube.com/@holoen_ceciliaimmergreen/streams',
+    'https://www.youtube.com/@holoen_raorapanthera/streams'
+
+
 
 ]

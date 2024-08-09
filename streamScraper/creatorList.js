@@ -13,8 +13,8 @@ module.exports = [
     'https://www.youtube.com/@AkiRosenthal/streams',
 
     // 2nd GEN
-    'https://www.youtube.com/@MinatoAqua/streams',
-    'https://www.youtube.com/@MurasakiShion/streams',
+    'https://www.youtube.com/@MinatoAqua/streams', //10
+    'https://www.youtube.com/@MurasakiShion/streams', 
     'https://www.youtube.com/@NakiriAyame/streams',
     'https://www.youtube.com/@YuzukiChoco/streams',
     'https://www.youtube.com/@OozoraSubaru/streams',
@@ -27,7 +27,7 @@ module.exports = [
     // 3rd GEN
     'https://www.youtube.com/@usadapekora/streams',
     'https://www.youtube.com/@ShiranuiFlare/streams',
-    'https://www.youtube.com/@ShiroganeNoel/streams',
+    'https://www.youtube.com/@ShiroganeNoel/streams', //10
     'https://www.youtube.com/@HoushouMarine/streams',
 
     // 4th GEN
@@ -43,7 +43,7 @@ module.exports = [
     'https://www.youtube.com/@OmaruPolka/streams',
 
     // 6th GEN
-    'https://www.youtube.com/@LaplusDarknesss/streams',
+    'https://www.youtube.com/@LaplusDarknesss/streams', //10
     'https://www.youtube.com/@TakaneLui/streams',
     'https://www.youtube.com/@HakuiKoyori/streams',
     'https://www.youtube.com/@SakamataChloe/streams',
@@ -57,7 +57,7 @@ module.exports = [
     // 2nd GEN ID
     'https://www.youtube.com/@KureijiOllie/streams',
     'https://www.youtube.com/@AnyaMelfissa/streams',
-    'https://www.youtube.com/@PavoliaReine/streams',
+    'https://www.youtube.com/@PavoliaReine/streams', //10
 
     // 3rd GEN ID
     'https://www.youtube.com/@VestiaZeta/streams',
@@ -75,7 +75,7 @@ module.exports = [
     'https://www.youtube.com/@IRyS/streams',
 
     // 2nd GEN EN
-    'https://www.youtube.com/@CeresFauna/streams',
+    'https://www.youtube.com/@CeresFauna/streams', //10
     'https://www.youtube.com/@OuroKronii/streams',
     'https://www.youtube.com/@NanashiMumei/streams',
     'https://www.youtube.com/@HakosBaelz/streams',
@@ -92,7 +92,7 @@ module.exports = [
     //VSPO
     'https://www.youtube.com/@KagaSumire/streams',
     'https://www.youtube.com/@nazunakaga/streams',
-    'https://www.youtube.com/@totokogara/streams',
+    'https://www.youtube.com/@totokogara/streams', //10
     'https://www.youtube.com/@uruhaichinose/streams',
     'https://www.youtube.com/@963Noah/streams',
     'https://www.youtube.com/@hinanotachiba7/streams',
@@ -102,12 +102,38 @@ module.exports = [
     'https://www.youtube.com/@lisahanabusa/streams',
     'https://www.youtube.com/@KaminariQpi/streams',
     'https://www.youtube.com/@yakumo_beni/streams',
-    'https://www.youtube.com/@AizawaEma/streams',
+    'https://www.youtube.com/@AizawaEma/streams', //10
     'https://www.youtube.com/@shinomiyaruna/streams',
     'https://www.youtube.com/@tsuna_nekota/streams',
     'https://www.youtube.com/@Met_Komori/streams',
     'https://www.youtube.com/@shiranamiramune/streams',
     'https://www.youtube.com/@YanoKuromu/streams',
     'https://www.youtube.com/@Kokage_Tsumugi/streams',
-    'https://www.youtube.com/@akarindao/streams'
+    'https://www.youtube.com/@akarindao/streams',
+
+
+    // NEOPORTE
+    'https://www.youtube.com/@ShibuyaHAL/streams',
+    'https://www.youtube.com/@Shirayuki_Reid/streams',
+    'https://www.youtube.com/@aruseinu0528/streams', //10
+    'https://www.youtube.com/@Hizuki_Yui_/streams',
+    'https://www.youtube.com/@niu_yozuna/streams',
+    'https://www.youtube.com/@tenteiforte4631/streams',
+    'https://www.youtube.com/@minase9505/streams',
+    'https://www.youtube.com/@kohakuteto_Q/streams',
+    'https://www.youtube.com/@kugaleo_Q/streams',
+    'https://www.youtube.com/@itoitoi_Q/streams',
+    'https://www.youtube.com/@KonkonAria/streams',
+    'https://www.youtube.com/@ShironaShizuku/streams',
+
+    // HOLOLIVE EN JUSTICE
+    'https://www.youtube.com/@holoen_erbloodflame/streams', //10
+    'https://www.youtube.com/@holoen_gigimurin/streams', 
+    'https://www.youtube.com/@holoen_ceciliaimmergreen/streams',
+    'https://www.youtube.com/@holoen_raorapanthera/streams',
+
+    //VSPO
+    'https://www.youtube.com/@RemiaAotsuki/streams',
+    'https://www.youtube.com/@AryaKuroha/streams',
+    'https://www.youtube.com/@jirajisaki/streams'
 ];
