@@ -1,21 +1,8 @@
 .bar{
-    top: 400px;
-    left: 400px;
-    margin: 0;
-    width: auto;
-    min-width: 200px;
-    height: 100px;
-    max-width: 1200px;
-    z-index: 100;
-    background-color: red;
-    display: inline-block;
-}
-
-.cardsss{
     background-color: #696969;
     border-radius: 8px;
     width: 1170px;
-    height: 80px;
+    height: 50px;
     margin-left: 20px;
     margin-right: 0px;
     margin-bottom: 10px;
@@ -30,22 +17,14 @@
     width: 150px;
     height: 30px;
     padding: 0;
-    margin-top: 25px;
+    margin-top: 10px;
     margin-left: calc(50% - 75px);
     background-color: #696969;
     display: inline-block;
 }
 
 .middleText{
-    font-size: 30px;
-    letter-spacing: 5px;
-    color: red;
-    font-family: Arial, Helvetica, sans-serif;
-    display: inline;
-}
-
-.text{
-    font-size: 20px;
+    font-size: 25px;
     letter-spacing: 5px;
     color: red;
     font-family: Arial, Helvetica, sans-serif;

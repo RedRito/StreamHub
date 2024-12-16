@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import "./DateBar.css"
-import { DateTime } from "luxon";
-
 const DateBar = (props) => {
     let date = props.DateTime.toFormat('MM/dd');
+    let id = null
+    if(props.id) id = props.id
     return(
         <>
-        <div className="cardsss">
+        <div className="bar" id={id}>
             <div className="barMiddle">
                 <div className="middleText">
                     {date}

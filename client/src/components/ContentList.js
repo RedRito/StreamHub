@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { DateTime } from "luxon";
 import { Link } from "react-router-dom";
 import "./ContentList.css"
@@ -13,7 +13,7 @@ const ContentList = (props) => {
     const toggleHover = () => {
         setHovering(!hovering);
     }
-
+    
     useEffect(() => {
         fetchData();
     }, [props]);
@@ -65,13 +65,25 @@ const ContentList = (props) => {
     let yester = date.plus({ days: -1 }).startOf('day').toMillis() / 1000;
     let yesterDate = date.plus({ days: -1 }).startOf('day');
 
+    let currentStream;  // Current Closest Stream in Unix Time
+
+    function getCurrentTime(){
+        return Math.floor(Date.now() / 1000);
+    }
+
+    function findClosestStream(streamTimes){
+        
+    }
+
     if(creatorList){
+
+        let currTime = getCurrentTime();
+        let streamTimes = [];
+
         creatorList.map((creator) => {
-            // handleCreatorChange(creator);
-            // console.log(creator);
             let streamTime = creator.unixTime;
+            streamTimes.push(streamTime); //used for calculating closest stream
             if(streamTime >= dayAfter){
-                
             }
             else if(streamTime >= tmmr){
                 tmmrList.push(creator);
@@ -84,27 +96,30 @@ const ContentList = (props) => {
             }
         });
 
-
-
-        var yesterComponents = yesterList.map((creator) => {
-            return(
-                <li key={creator.streamId} className="test">
-                <ContentCard
-                    stream = {creator}
-                    timeZone = {props.timeZone}
-                    hovering = {hovering}
-                    toggleHover = {toggleHover}
-                />
-                </li>
-            )
+        //find curr closest stream
+        currentStream = streamTimes.reduce(function(prev, curr){
+            return (Math.abs(curr - currTime) < Math.abs(prev - currTime) ? curr : prev);
         });
 
-        var todayComponents = todayList.map((creator) => {
+        var yesterComponents = returnListComponentGivenDay(yesterList)
+
+        var todayComponents = returnListComponentGivenDay(todayList);
+
+        var tmmrComponents = returnListComponentGivenDay(tmmrList);
+    }
+
+    function returnListComponentGivenDay(dayList){
+
+        if(!dayList && !dayList.length) return;
+
+        return dayList.map((creator) => {
             if(!creator){
                 return null;
             }
+            let id = null;
+            if(creator.unixTime == currentStream) id = "currentStream";
             return(
-                <li key={creator.streamId} className="test">
+                <li key={creator.streamId} id={id} className="test">
                 <ContentCard
                     stream = {creator}
                     timeZone = {props.timeZone}
@@ -114,38 +129,11 @@ const ContentList = (props) => {
                 </li>
             )
         })
-
-        var tmmrComponents = tmmrList.map((creator) => {
-            if(!creator){
-                return null;
-            }
-            return(
-                <li key={creator.streamId} className="test">
-                <ContentCard
-                    stream = {creator}
-                    timeZone = {props.timeZone}
-                    hovering = {hovering}
-                    toggleHover = {toggleHover}
-                />
-                </li>
-            )
-        })
     }
 
-    function firstDay(){
-        return( 
-            <DateBar DateTime = {yesterDate}/>
-        )
-    }
-    function secondDay(){
+    function returnDayBar(date, id){
         return(
-            <DateBar DateTime = {todayDate}/>
-        )
-    }
-
-    function thirdDay(){
-        return(
-            <DateBar DateTime = {tmmrDate}/>
+            <DateBar DateTime = {date} id = {id}/>
         )
     }
 
@@ -155,14 +143,15 @@ const ContentList = (props) => {
         let third = null;
 
         if(yesterList && yesterList.length){
-            first = firstDay()
+            first = returnDayBar(yesterDate, null);
         }
         if(todayList && todayList.length){
-            second = secondDay()
+            second = returnDayBar(todayDate, "today");
         }
         if(tmmrList && tmmrList.length){
-            third = thirdDay()
+            third = returnDayBar(tmmrDate, null);
         }
+
         return(
             <ul className="list-size">
                 {first}
@@ -173,9 +162,16 @@ const ContentList = (props) => {
                 {tmmrComponents}
             </ul>
         )
-        // else console.log(yesterComponents);
+    }
 
-
+    
+    var el = document.getElementById("currentStream") ? document.getElementById("currentStream") : document.getElementById("today");
+    if(el){
+        let scrollOptions = {
+            behavior: 'smooth',
+            block: 'start'
+        }
+        el.scrollIntoView(scrollOptions);
     }
 
     return(

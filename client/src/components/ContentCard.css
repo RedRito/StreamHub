@@ -99,6 +99,21 @@
     display: inline-block;
 }
 
+.card-text-views{
+    margin-top: 5px;
+    margin-left: 5px;
+    font-size: 12px;
+    
+    overflow: hidden;
+}
+
+.card-views{
+    width: 90px;
+    height: 30px;
+    /* background-color: blueviolet; */
+    float: inline-end;
+}
+
 .card-image{
     background-color: blueviolet;
     padding: 0;
@@ -121,6 +136,7 @@
     margin-left: calc(50% - 30px);
     background-color: black;
     clip-path: inset(0px 0px 0px 0px round 80%);
+    display: inline-block;
 }
 
 .card-icon{
@@ -148,18 +164,6 @@
     padding: 0;
   }
   
-.m-scroll {
-    overflow: hidden;
-    height: 100%;
-    white-space: nowrap;
-    animation: scrollText 10s infinite linear;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding-left: 0;
-    font-size: 0;
-    display: inline-block;
-}
-
 .hoverCover{
     background-color: grey;
     width: 100%;
@@ -176,51 +180,3 @@ span {
     padding: 0;
     color: white;
 }
-
-
-/* @media screen and (max-width: 1550px)  {
-    .card{
-        background-color: white;
-        border-radius: 8px;
-        width: 80%;
-        height: 85%;
-        margin-left: 2%;
-        margin-right: 0px;
-        margin-bottom: 0px;
-        margin-top: 0px;
-        box-shadow: -3px 8px 15px grey;
-        padding: 0;
-        display: inline-block;
-    }
-    .card-image{
-        background-color: blueviolet;
-        padding: 0;
-        margin-top: 0;
-        margin-left: 1%;
-        width: 90%;
-        height: 150px;
-    }
-    .card-image-crop{
-        margin-top: -12px;
-        max-width: 250px;
-        max-height: 250px;
-        clip-path: inset(24px 0px 24px 0px);
-    }
-    
-}
-
-@media screen and (max-width: 1280px)  {
-    .card{
-        background-color: white;
-        border-radius: 8px;
-        width: 270px;
-        height: 250px;
-        margin-left: 20px;
-        margin-right: 0px;
-        margin-bottom: 0px;
-        margin-top: 0px;
-        box-shadow: -3px 8px 15px grey;
-        padding: 0;
-        display: inline-block;
-    }
-} */

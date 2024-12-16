@@ -10,6 +10,7 @@ function SideBar(props){
 
     function changeTimeZone(event)
     {
+        createTimeZoneCookie(event.target.value);
         props.handleChange(event.target.value);
     }
     // pass this function as props to children, this would be the burger button or something similar
@@ -22,6 +23,10 @@ function SideBar(props){
         // console.log("SIDEBAR IS " + sideBar);
     }
 
+    function createTimeZoneCookie(timeZone){
+        document.cookie = "timeZone=" + timeZone + ";" + "SameSite=lax;max-age=max-age-in-seconds;";
+    }
+
     let timeZoneArr = Intl.supportedValuesOf('timeZone');
     
     let timeZones = timeZoneArr.map((timeZone) => {
@@ -31,15 +36,9 @@ function SideBar(props){
             </option>
         )
     })
-
-    // <button className={sideBar ? "buttonClicked" : "button"} onClick={toggleSideBar}>
-    //             X
-    //     </button>
-
     return(
         <>
         <button className={sideBar ? "cross" : "cross-clicked"} onClick={toggleSideBar}/>
-            
         <div className= {(width >= 1600) ? "sideBarBody" : sideBar ? "sideBarBodyHidden" : "sideBarBodyNotHidden"}>
             <ul>
                 <li className="listBox"> 
@@ -48,6 +47,13 @@ function SideBar(props){
                             All
                         </span>
                     </Link>
+                    <li className="listNested">
+                        <Link to = '/Vods'>
+                            <span className="textNested">
+                                --Vods
+                            </span>
+                        </Link>
+                    </li>
                 </li>
                 <li className="listBox">
                     <Link to = '/Hololive'>
@@ -55,6 +61,13 @@ function SideBar(props){
                             HOLOLIVE
                         </span>
                     </Link>
+                    <li className="listNested">
+                        <Link to = '/Hololive/Vods'>
+                            <span className="textNested">
+                                --Vods
+                            </span>
+                        </Link>
+                    </li>
                 </li>
                 <li className="listBox">
                     <Link to = '/VSPO'>
@@ -62,6 +75,13 @@ function SideBar(props){
                             VSPO!
                         </span>
                     </Link>
+                    <li className="listNested">
+                        <Link to = '/VSPO/Vods'>
+                            <span className="textNested">
+                                --Vods
+                            </span>
+                        </Link>
+                    </li>
                 </li>
                 <li className="listBox">
                     <Link to = '/KUROSANJI'>
@@ -69,6 +89,13 @@ function SideBar(props){
                             KUROSANJI
                         </span>
                     </Link>
+                    <li className="listNested">
+                        <Link to = '/Vods'>
+                            <span className="textNested">
+                                --Vods
+                            </span>
+                        </Link>
+                    </li>
                 </li>
                 <li className="listBox">
                     <Link to = '/Neoporte'>
@@ -76,6 +103,27 @@ function SideBar(props){
                             NEOPORTE
                         </span>
                     </Link>
+                    <li className="listNested">
+                        <Link to = '/Neoporte/Vods'>
+                            <span className="textNested">
+                                --Vods
+                            </span>
+                        </Link>
+                    </li>
+                </li>
+                <li className="listBox">
+                    <Link to = '/Other'>
+                        <span className="text">
+                            OTHER
+                        </span>
+                    </Link>
+                    <li className="listNested">
+                        <Link to = '/Other/Vods'>
+                            <span className="textNested">
+                                --Vods
+                            </span>
+                        </Link>
+                    </li>
                 </li>
                 <li className="listBox">
                     <form className="form">
